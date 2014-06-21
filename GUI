@@ -1,0 +1,375 @@
+import java.*;
+import processing.serial.*;
+PImage bg,bg1,bg2,bg3,bg4,bg5,bg6,bg7,bg8,pic;
+Serial arduino;
+float timer[]= new float[9];
+int liner[]= new int[9];
+int line;int line1=0;//String file[];
+int t=0;int t1=0;int s=0;int team;int page=0;
+char mode;char teams;String file[];
+int q=0;
+String stat1 = "Enter the Mode & No. of Teams:";
+float time1;float time=0.0;PImage icon;
+void setup() 
+{
+  size(800,480);icon=loadImage("icon.ico");
+  //frame.setIconImage(icon.getImage());
+  //changeAppTitle("Buzzer System || JMD");
+  file = loadStrings("quiz.txt");
+  textFont(createFont("Gabriola", 90));
+  println(Serial.list());
+  String port = Serial.list()[0];
+  arduino = new Serial(this, port, 9600);
+  bg1=loadImage("quiz.jpg");
+  bg2=loadImage("einstein.gif");
+  bg3=loadImage("bond.jpg");
+  bg4=loadImage("deep.jpg");
+  bg5=loadImage("science.jpg");
+  bg6=loadImage("art.jpg");
+  bg7=loadImage("poke.jpg");
+  bg8=loadImage("travel.jpg");
+  newbackground();
+
+}
+
+void draw()
+{
+  
+  if(page==0)
+  {
+    textSize(40);
+    fill(255,0,0);//question();
+    text(stat1+(frameCount/10 % 2 == 0 ? "_" : ""), 50, 50);
+    text("A: Single Buzzer      B: Double Buzzer",50,90);
+    text("C: All Timer          D: JAM",50,130);
+    text("Select A Theme",(width/2)-100,(height/2)-50);
+    fill(255);stroke(0);
+    rect(width-100,0,160,20);
+    fill(0);
+    textSize(20);
+    text("Time:  "+hour()+":  "+minute()+(frameCount/30 % 2 == 0 ? ":  " : "   ")+second(),width-95,12);
+    tint(255,27);
+    image(bg1, 0, (height/2), width/4, height/4);
+    image(bg2, width/4, (height/2), width/4, height/4);
+    image(bg3, width/2, (height/2), width/4, height/4);
+    image(bg4, 3*width/4, (height/2), width/4, height/4);
+    image(bg5, 0, 3*(height/4), width/4, height/4);
+    image(bg6, width/4,3*(height/4), width/4, height/4);
+    image(bg7, width/2, 3*(height/4), width/4, height/4);
+    image(bg8, 3*width/4, 3*(height/4), width/4, height/4);
+    noTint();
+    if(mousePressed)
+    {
+      if(mouseX>0 && mouseX<200)
+      {
+        if(mouseY>240 && mouseY<360)
+        {
+          background(bg1);delay(500);bg=bg1;
+        }
+        if(mouseY>360 && mouseY<480)
+        {
+          background(bg5);delay(500);bg=bg5;
+        }
+      }
+      if(mouseX>200 && mouseX<400)
+      {
+        if(mouseY>240 && mouseY<360)
+        {
+          background(bg2);delay(500);bg=bg2;
+        }
+        if(mouseY>360 && mouseY<480)
+        {
+          background(bg6);delay(500);bg=bg6;
+        }
+      }
+      if(mouseX>400 && mouseX<600)
+      {
+        if(mouseY>240 && mouseY<360)
+        {
+          background(bg3);delay(500);bg=bg3;
+        }
+        if(mouseY>360 && mouseY<480)
+        {
+          background(bg7);delay(500);bg=bg7;
+        }
+      }
+      if(mouseX>600 && mouseX<800)
+      {
+        if(mouseY>240 && mouseY<360)
+        {
+          background(bg4);delay(500);bg=bg4;
+        }
+        if(mouseY>360 && mouseY<480)
+        {
+          background(bg8);delay(500);bg=bg8;
+        }
+      }
+    }
+    if(mode!=0 && teams!=0)
+    {
+       page=1;delay(1000);
+    }
+  }
+  if(page==1)
+  { 
+    arduino.write('C');
+    background(bg);
+    //if(mode=='B'||mode=='C')
+    {
+    team=teams-'0';int t=team; t=(t%2!=0)?t+1:t;
+    line=0;
+    if (arduino.available() > 0) 
+      {
+       line1=arduino.read();
+         println(line1);
+      }
+      line=int(line1);
+      
+    timer[line]=time1;
+    liner[line]=1;
+    stroke(100);fill(200);textSize(40);
+    tint(255,127);int c=0;int count=0;
+    while(team!=0)
+    {
+      textSize(40);
+      fill(0,255,0,100);stroke(100);
+      if(liner[c+1]==1)
+      {
+        fill(255,0,0,100);count++;
+      }
+      rect(0,(c/2)*height/(t/2),width/2,height/(t/2),20);
+      fill(0,0,255,150);
+      text((char(c+'A'))/*+" : "+ timer[c+1]*/,0,(((c/2)+1)*height/(t/2))-20);team-=1;
+      fill(0,255,0,100);
+      if(liner[c+2]==1)
+      {
+        fill(255,0,0,100);count++;
+      }
+      rect(width/2,(c/2)*height/(t/2),width/2,height/(t/2),20);
+      fill(0,0,255,150);
+      text((char(c+'B'))/*+" : "+ timer[c+2]*/,width/2,(((c/2)+1)*height/(t/2))-20);
+      c+=2;team-=1;
+      //
+      if(team==1)
+      {
+        textSize(40);
+      fill(0,255,0,100);stroke(100);
+        if(liner[c+1]==1)
+      {
+        fill(255,0,0,100);count++;
+      }
+      rect(width/4,(c/2)*height/(t/2),width/2,height/(t/2),20);
+        fill(0,0,255,150);
+      text((char(c+'A'))/*+" : "+ timer[c+1]*/,width/4,(((c/2)+1)*height/(t/2))-20);
+        team=0;
+      }
+      textSize(60);
+    fill(0);
+    text("Buzzer Check !!",160,60);
+    noTint();
+    if(count==(teams-'0')&&key==' ')
+    {
+      page=2;    
+      arduino.write(mode);
+    }
+    if(team==0)
+    {count=0;
+    }
+  }
+  /*   if(mode=='A'||mode=='D')
+     {
+       line=0;
+        if (arduino.available() > 0) 
+        {
+         line1=arduino.read();
+           println(line1);
+        }
+        line=int(line1);
+        if(line!=0)
+        {
+          textSize(60);
+          text(char('A'-1+line),100,700);
+        }
+     }*/
+  }
+ }
+   /*
+    {
+        ellipse(100,500,100,100);
+        ellipse(500,500,100,100);
+    if (arduino.available() > 0) 
+      {
+       time1=Float.parseFloat(arduino.readStringUntil('\n'));
+       println(time1/1000);
+       line1=Float.parseFloat(arduino.readStringUntil('\n'));
+         println(line1);
+      }
+      line=int(line1);
+      time=time1/1000;
+      if(line%2==1)
+        {
+        stroke(0);fill(255,0,0);text(time,100,450);}
+        ellipse(100,500,100,100);
+        fill(255);line=line/2;
+      if(line%2==1)
+        {
+        stroke(0);fill(255,0,0);text(time,500,450);}
+        ellipse(500,500,100,100);
+    }   
+  }*/
+ if(page==2)
+{
+  
+  if(keyPressed)
+  {
+    if(key==' ')
+    {
+      time=(float)millis()/1000;
+      arduino.write(key);
+      timer[1]=0.0;
+      liner[1]=0;
+      timer[2]=0.0;
+      liner[2]=0;
+      timer[3]=0.0;
+      liner[3]=0;
+      timer[4]=0.0;
+      liner[4]=0;
+      timer[5]=0.0;
+      liner[5]=0;
+      timer[6]=0.0;
+      liner[6]=0;
+      timer[7]=0.0;
+      liner[7]=0;
+      timer[8]=0.0;
+      liner[8]=0;
+       line=0; line1=0;
+    }
+  }
+  //if(mode=='B'||mode=='C');
+  {
+    background(bg);
+    team=teams-'0';int t=team; t=(t%2!=0)?t+1:t;
+    line1=0; 
+    if (arduino.available() > 0) 
+      {
+       time1=(float)(millis())/1000-time;
+       println(time1);
+       line1=arduino.read();
+         println(line1);
+      }
+      line=int(line1);
+      timer[line]=time1;
+      liner[line]=1;
+      stroke(100);fill(200);textSize(40);
+      tint(255,127);int c=0;
+      while(team!=0)
+      {
+        textSize(40);
+        fill(0,255,0,120);stroke(100);
+        if(liner[c+1]==1)
+        {
+          fill(255,0,0,120);
+        }
+        rect(0,(c/2)*height/(t/2),width/6,height/(t/2),20);
+        fill(0,0,255,150);
+        text((char(c+'A'))+" : "+ String.format("%.3f",timer[c+1]),10,(((c/2)+1)*height/(t/2))-20);team-=1;
+        fill(0,255,0,120);
+        if(liner[c+2]==1)
+        {
+          fill(255,0,0,120);
+        }
+        rect(5*width/6,(c/2)*height/(t/2),width/6,height/(t/2),20);
+        fill(0,0,255,150);
+        text((char(c+'B'))+" : "+ String.format("%.3f",timer[c+2]),(5*width/6)+10,(((c/2)+1)*height/(t/2))-20);
+        c+=2;team-=1;
+        //
+        if(team==1)
+        {
+          textSize(40);
+          fill(0,255,0,100);stroke(100);
+            if(liner[c+1]==1)
+            {
+              fill(255,0,0,100);
+            }
+          rect(width/4,(c/2)*height/(t/2),width/2,height/(t/2),20);
+            fill(0,0,255,150);
+          text((char(c+'A'))+" : "+ String.format("%.3f",timer[c+1]),(width/4)+20,(((c/2)+1)*height/(t/2))-20);
+            team=0;
+        }
+        textSize(30);
+        fill(0,0,200);
+        text(file[0],160,60);
+        text(file[1],160,110);
+        text(file[2],260,110);
+        text(file[3],160,160);
+        text(file[4],260,160);
+        pic=loadImage("pic.jpg");
+        image(pic,width/4,height/4,width/2,height/2);
+        noTint();
+      }
+    }
+    /* if(mode=='A'||mode=='D')
+     {
+       background(bg);
+       line=0;
+        if (arduino.available() > 0) 
+        {
+         line1=arduino.read();
+           println(line1);
+        }
+        line=int(line1);
+        textSize(30);
+        text("Kya aap ke toothpaste mei namak hai !!",100,60);
+
+        if(line!=0)
+        {
+          textSize(200);
+          text(char('A'-1+line),100,700);
+        }
+     }*/
+  }
+}
+
+void keyPressed() {
+  if (key >= 'A' && key <= 'D') {
+    mode = key;
+    arduino.write(mode);
+    stat1 = stat1 + key+" , ";}
+  if(key>='2'&& key <= '8'){
+    stat1 = stat1 + key+"";textSize(40);fill(255,0,0);
+    text(stat1+(frameCount/10 % 2 == 0 ? "_" : ""), 50, 50);
+    teams=key;
+    if(key==' ')
+    {
+      time=(float)millis()/1000;
+      arduino.write(key);
+    }
+  }
+}
+//  if(key=='w')
+//    {
+//      t=millis();s=1;
+//    }
+// if(key=='e')
+//    {
+//      t=0;
+//      s=2;
+//    }
+//    if(key=='r')
+//    {
+//      time="0:000";
+//     s=0;
+    
+void newbackground()
+{
+  int milli=(millis())%600;
+  stroke(255,milli/6);
+  line(0,milli,width,milli);
+}
+/*void question()
+{
+  textSize(24);fill(0);
+  
+    text(file[0],0,0);
+}
+*/    
