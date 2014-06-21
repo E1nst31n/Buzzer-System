@@ -1,0 +1,148 @@
+ #include <PinChangeInt.h>
+
+void reset()
+{
+     digitalWrite(A5,LOW);
+     delay(4);
+     digitalWrite(A5,HIGH);
+     digitalWrite(A4,LOW);
+   }
+int b[] = {5,6,7,8,9,10,11,12};
+char incoming;
+volatile int t=0;
+int c=0,val=0;
+void setup(){
+  
+  Serial.begin(9600);
+  pinMode(A4, OUTPUT);
+  pinMode(A5, OUTPUT);
+  pinMode(2,INPUT);
+  digitalWrite(2,LOW);
+  digitalWrite(A4, LOW);
+  digitalWrite(A5, HIGH);
+  pinMode(b[0], INPUT);
+  pinMode(b[1], INPUT);
+  pinMode(b[2], INPUT); 
+  pinMode(b[3], INPUT);
+  pinMode(b[4], INPUT);
+  pinMode(b[5], INPUT);
+  pinMode(b[6], INPUT);
+  pinMode(b[7], INPUT);
+  digitalWrite(b[0], LOW);
+  digitalWrite(b[1], LOW);
+  digitalWrite(b[2], LOW);
+  digitalWrite(b[3], LOW);
+  digitalWrite(b[4], LOW);
+  digitalWrite(b[5], LOW);
+  digitalWrite(b[6], LOW);
+  digitalWrite(b[7], LOW);
+  PCintPort::attachInterrupt(b[0], b1change, RISING);
+  PCintPort::attachInterrupt(b[1], b2change, RISING);
+  PCintPort::attachInterrupt(b[2], b3change, RISING);
+  PCintPort::attachInterrupt(b[3], b4change, RISING);
+  PCintPort::attachInterrupt(b[4], b5change, RISING);
+  PCintPort::attachInterrupt(b[5], b6change, RISING);
+  PCintPort::attachInterrupt(b[6], b7change, RISING);
+  PCintPort::attachInterrupt(b[7], b8change, RISING);
+    
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if(Serial.available()>0){
+  incoming = Serial.read();
+ if (incoming == 'A')
+ {
+   t=1;
+      c=1;
+      val=0;
+ }
+ else if(incoming == 'B'){
+     t=2;
+     c=2;
+     val=0;
+ }
+ else if(incoming == 'C'){
+      t=15;
+      c=15;
+      val=0;
+ }
+ else if(incoming == 'D')
+ {
+   c=1;
+   t=1;
+   val=1;
+ }
+ else if(incoming == ' '){
+   t=c;
+   reset();
+     }
+  }
+ if(val==1 && t==0)
+ {
+   delay(2000);
+   t=c;
+   reset();
+ }
+ //Serial.write(t);
+ //delay(1);
+}
+
+void b1change(){
+  Serial.write(1);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+  
+}
+
+void b2change(){
+  Serial.write(2);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+ 
+}
+void b3change(){
+  Serial.write(3);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+    
+}
+void b4change(){
+  Serial.write(4);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+    
+}
+void b5change(){  
+  Serial.write(5);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+ 
+
+}
+void b6change(){
+  Serial.write(6);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+  
+  }
+void b7change(){
+  Serial.write(7);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+  
+}
+void b8change(){
+  Serial.write(8);
+  if(t==1)
+  digitalWrite(A4,HIGH);
+  t--;
+  
+}
