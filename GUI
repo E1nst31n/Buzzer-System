@@ -29,7 +29,6 @@ void setup()
   bg7=loadImage("poke.jpg");
   bg8=loadImage("travel.jpg");
   newbackground();
-
 }
 
 void draw()
